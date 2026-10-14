@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum TripStatus {
+  OPEN
+  FULL
+  CANCELLED
+}
+
+model User {
+  id        String     @id @default(cuid())
+  name      String
+  email     String     @unique
+  password  String
+  role      Role       @default(USER)
+  status    UserStatus @default(ACTIVE)
+  bookings  Booking[]
+  messages  Message[]
+  createdAt DateTime   @default(now())
+}
+
+model Place {
+  id          String       @id @default(cuid())
+  name        String
+  description String
+  location    String
+  photos      PlacePhoto[]
+  trips       Trip[]
+}
+
+model PlacePhoto {
+  id      String @id @default(cuid())
+  url     String
+  placeId String
+  place   Place  @relation(fields: [placeId], references: [id], onDelete: Cascade)
+}
+
+model Trip {
+  id       String     @id @default(cuid())
+  placeId  String
+  place    Place      @relation(fields: [placeId], references: [id])
+  date     DateTime
+  capacity Int
+  status   TripStatus @default(OPEN)
+  bookings Booking[]
+  messages Message[]
+
+  @@unique([placeId, date])
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  userId    String
+  tripId    String
+  user      User     @relation(fields: [userId], references: [id])
+  trip      Trip     @relation(fields: [tripId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, tripId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  text      String
+  userId    String
+  tripId    String
+  user      User     @relation(fields: [userId], references: [id])
+  trip      Trip     @relation(fields: [tripId], references: [id])
+  createdAt DateTime @default(now())
+}
