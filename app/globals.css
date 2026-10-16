@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #223843;
+  --color-primary-dark: #192a32;
+  --color-primary-light: #344F5B;
+  --color-surface: #EFF1F3;
+  --color-mauve: #D8CDD2;
+  --color-beige: #D8B4A0;
+  --color-terracotta: #D97760;
+  --color-terracotta-hover: #C96A54;
+  --color-muted: #52646B;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #EFF1F3;
+  --foreground: #223843;
+  --primary: #223843;
+  --primary-hover: #344F5B;
+  --card-bg: #ffffff;
+  --card-border: #D8CDD2;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #EFF1F3;
+  color: #223843;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle smooth background lighting */
+.bg-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(216, 205, 210, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(216, 205, 210, 0.4) 1px, transparent 1px);
+}
+
+.glass-panel {
+  background: rgba(239, 241, 243, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(216, 205, 210, 0.8);
 }
