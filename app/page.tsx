@@ -1,14 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
+
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+
 import {
   MapPin,
   Calendar,
   Users,
   Car,
   ArrowRight,
-  Sparkles,
   ChevronRight,
 } from "lucide-react";
 
@@ -19,309 +20,391 @@ export default async function HomePage() {
     take: 6,
     include: {
       photos: { take: 1 },
-      _count: { select: { trips: true, photos: true } },
+      _count: {
+        select: {
+          trips: true,
+          photos: true,
+        },
+      },
     },
     orderBy: { name: "asc" },
   });
 
   return (
-    <div>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-white border-b border-slate-200">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[1000px] h-[500px] bg-gradient-to-tr from-blue-100/60 via-indigo-50/50 to-emerald-50/30 blur-3xl opacity-70 pointer-events-none" />
+    <main className="bg-[#EFF1F3] text-[#223843]">
+      {/* Hero section */}
+      <section className="border-b border-[#D8CDD2] bg-[#EFF1F3]">
+        <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-10">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            <div>
+              <p className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-[#D97760]">
+                <span className="h-2 w-2 rounded-full bg-[#D97760]" />
+                Weekend trips, shared with others
+              </p>
 
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/70 px-4 py-1.5 text-xs font-semibold text-blue-700 mb-8 backdrop-blur-sm shadow-xs">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Discover Weekend Escapes & Shared Road Trips</span>
-          </div>
+              <h1 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+                Good places are better when{" "}
+                <span className="text-[#D97760]">shared.</span>
+              </h1>
 
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-6xl max-w-4xl mx-auto leading-tight">
-            Explore extraordinary places,{" "}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-teal-500 bg-clip-text text-transparent">
-              together.
-            </span>
-          </h1>
+              <p className="mt-6 max-w-xl text-base leading-7 text-[#52646B] sm:text-lg">
+                Find places worth visiting, plan your next trip, and share
+                the journey with people who enjoy exploring just as much
+                as you do.
+              </p>
 
-          <p className="mt-6 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Let&apos;s Visit connects adventure seekers with group journeys. Discover breathtaking destinations, share comfortable rides, and make memories on the road.
-          </p>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/places"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#223843] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#344F5B]"
+                >
+                  Explore destinations
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
 
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/places"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:shadow-blue-600/35 transition active:scale-[0.98]"
-            >
-              Browse Destinations
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            {!session?.user && (
-              <Link
-                href="/register"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-7 py-3.5 text-base font-semibold text-slate-700 shadow-xs hover:bg-slate-50 transition active:scale-[0.98]"
-              >
-                Create Free Account
-              </Link>
-            )}
-            {session?.user?.role === "ADMIN" && (
-              <Link
-                href="/admin/trips/new"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-7 py-3.5 text-base font-semibold text-slate-700 shadow-xs hover:bg-slate-50 transition"
-              >
-                Schedule a Trip
-              </Link>
-            )}
-          </div>
+                {!session?.user && (
+                  <Link
+                    href="/register"
+                    className="inline-flex items-center justify-center rounded-lg border border-[#223843]/25 bg-transparent px-6 py-3.5 text-sm font-semibold text-[#223843] transition-colors hover:bg-white"
+                  >
+                    Join Let&apos;s Visit
+                  </Link>
+                )}
 
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto border-t border-slate-100 pt-10">
-            <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-100">
-              <p className="text-2xl font-bold text-slate-900">{places.length}+</p>
-              <p className="text-xs text-slate-500 font-medium mt-1">Curated Spots</p>
+                {session?.user?.role === "ADMIN" && (
+                  <Link
+                    href="/admin"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#223843]/25 px-6 py-3.5 text-sm font-semibold text-[#223843] transition-colors hover:bg-white"
+                  >
+                    Admin dashboard
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
+              </div>
+
+              <div className="mt-12 flex flex-wrap gap-x-8 gap-y-4 border-t border-[#D8CDD2] pt-6">
+                <div>
+                  <p className="text-2xl font-bold">
+                    {places.length.toString().padStart(2, "0")}
+                  </p>
+                  <p className="mt-1 text-sm text-[#52646B]">
+                    Featured destinations
+                  </p>
+                </div>
+
+                <div className="border-l border-[#D8CDD2] pl-8">
+                  <p className="text-2xl font-bold">Together</p>
+                  <p className="mt-1 text-sm text-[#52646B]">
+                    Better travel experiences
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-100">
-              <p className="text-2xl font-bold text-blue-600">100%</p>
-              <p className="text-xs text-slate-500 font-medium mt-1">Shared Journeys</p>
-            </div>
-            <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-100">
-              <p className="text-2xl font-bold text-slate-900">4-6 Seats</p>
-              <p className="text-xs text-slate-500 font-medium mt-1">Per Vehicle Fleet</p>
-            </div>
-            <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-100">
-              <p className="text-2xl font-bold text-emerald-600">Active</p>
-              <p className="text-xs text-slate-500 font-medium mt-1">Trips & Bookings</p>
+
+            {/* Simple visual panel using the same palette */}
+            <div className="relative">
+              <div className="overflow-hidden rounded-2xl bg-[#D8CDD2] p-3 sm:p-4">
+                {places[0]?.photos[0] ? (
+                  <div className="relative h-[300px] overflow-hidden rounded-xl sm:h-[420px]">
+                    <Image
+                      src={places[0].photos[0].url}
+                      alt={places[0].name}
+                      fill
+                      priority
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="object-cover"
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#223843]/80 via-transparent to-transparent" />
+
+                    <div className="absolute bottom-0 left-0 right-0 p-6 text-white sm:p-8">
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-[#D8B4A0]">
+                        A place to start
+                      </p>
+
+                      <h2 className="text-2xl font-bold sm:text-3xl">
+                        {places[0].name}
+                      </h2>
+
+                      <p className="mt-2 flex items-center gap-2 text-sm text-white/85">
+                        <MapPin className="h-4 w-4" />
+                        {places[0].location}
+                      </p>
+
+                      <Link
+                        href={`/places/${places[0].id}`}
+                        className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-[#D8B4A0]"
+                      >
+                        View destination
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex h-[300px] flex-col justify-between rounded-xl bg-[#223843] p-7 text-white sm:h-[420px] sm:p-9">
+                    <div>
+                      <MapPin className="h-8 w-8 text-[#D97760]" />
+                      <p className="mt-6 text-sm text-[#D8B4A0]">
+                        Your next adventure
+                      </p>
+                    </div>
+
+                    <div>
+                      <h2 className="text-3xl font-bold leading-tight sm:text-4xl">
+                        There&apos;s always somewhere new to go.
+                      </h2>
+                      <p className="mt-4 max-w-sm text-sm leading-6 text-white/75">
+                        Browse destinations and find inspiration for your
+                        next trip.
+                      </p>
+
+                      <Link
+                        href="/places"
+                        className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#D8B4A0] hover:text-white"
+                      >
+                        Discover places
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="absolute -bottom-4 -left-2 -z-0 h-20 w-24 rounded-2xl bg-[#D97760] sm:-left-4 sm:h-24 sm:w-28" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Destinations Section */}
-      <section className="py-20 bg-slate-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
+      {/* Featured destinations */}
+      <section className="bg-white py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+          <div className="mb-9 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                Explore The Outdoors
-              </span>
-              <h2 className="text-3xl font-bold text-slate-900 mt-1">
-                Featured Places to Visit
+              <p className="text-sm font-semibold text-[#D97760]">
+                Find your next stop
+              </p>
+
+              <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+                Places worth visiting
               </h2>
-              <p className="text-slate-600 mt-2 text-sm max-w-xl">
-                Browse hand-picked destinations ready for your next excursion.
+
+              <p className="mt-3 max-w-xl text-sm leading-6 text-[#52646B] sm:text-base">
+                Take a look at some of the destinations you can explore
+                with Let&apos;s Visit.
               </p>
             </div>
+
             <Link
               href="/places"
-              className="mt-4 sm:mt-0 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 group"
+              className="inline-flex w-fit items-center gap-2 text-sm font-semibold text-[#223843] transition-colors hover:text-[#D97760]"
             >
-              View all destinations
-              <ChevronRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+              See all destinations
+              <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
 
           {places.length === 0 ? (
-            <div className="text-center py-16 rounded-2xl border border-dashed border-slate-300 bg-white p-8">
-              <MapPin className="mx-auto h-12 w-12 text-slate-400" />
-              <h3 className="mt-4 text-base font-semibold text-slate-900">No destinations yet</h3>
-              <p className="mt-1 text-sm text-slate-500">
-                Admins can add places from the admin dashboard.
+            <div className="rounded-xl border border-dashed border-[#D8CDD2] bg-[#EFF1F3] px-6 py-16 text-center">
+              <MapPin className="mx-auto h-10 w-10 text-[#D97760]" />
+
+              <h3 className="mt-4 text-lg font-semibold">
+                No destinations yet
+              </h3>
+
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#52646B]">
+                New places will appear here when they are added.
               </p>
+
               {session?.user?.role === "ADMIN" && (
                 <Link
                   href="/admin/places/new"
-                  className="mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                  className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[#223843] px-5 py-3 text-sm font-semibold text-white hover:bg-[#344F5B]"
                 >
-                  Add First Place
+                  Add a destination
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {places.map((place) => (
-                <div
+                <article
                   key={place.id}
-                  className="group flex flex-col rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md hover:border-slate-300 transition duration-200"
+                  className="group overflow-hidden rounded-xl border border-[#D8CDD2]/80 bg-white transition-colors duration-200 hover:border-[#D8B4A0]"
                 >
-                  <div className="relative h-48 w-full bg-slate-100 overflow-hidden">
-                    {place.photos[0] ? (
-                      <Image
-                        src={place.photos[0].url}
-                        alt={place.name}
-                        fill
-                        className="object-cover transition duration-300 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-tr from-slate-100 to-slate-200 text-slate-400">
-                        <MapPin className="h-10 w-10 opacity-40" />
+                  <Link
+                    href={`/places/${place.id}`}
+                    className="block"
+                    aria-label={`View ${place.name}`}
+                  >
+                    <div className="relative h-56 overflow-hidden bg-[#EFF1F3]">
+                      {place.photos[0] ? (
+                        <Image
+                          src={place.photos[0].url}
+                          alt={place.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-[#D8CDD2]/50">
+                          <MapPin className="h-10 w-10 text-[#223843]/40" />
+                        </div>
+                      )}
+
+                      <span className="absolute bottom-3 left-3 rounded-md bg-[#223843]/90 px-3 py-1.5 text-xs font-medium text-white">
+                        {place._count.trips}{" "}
+                        {place._count.trips === 1 ? "trip" : "trips"}
+                      </span>
+                    </div>
+
+                    <div className="p-5">
+                      <p className="flex items-center gap-2 text-xs font-medium text-[#D97760]">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {place.location}
+                      </p>
+
+                      <h3 className="mt-3 text-xl font-semibold tracking-tight text-[#223843]">
+                        {place.name}
+                      </h3>
+
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#52646B]">
+                        {place.description}
+                      </p>
+
+                      <div className="mt-5 flex items-center justify-between border-t border-[#D8CDD2]/70 pt-4">
+                        <span className="text-xs text-[#52646B]">
+                          {place._count.photos}{" "}
+                          {place._count.photos === 1 ? "photo" : "photos"}
+                        </span>
+
+                        <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#223843] transition-colors group-hover:text-[#D97760]">
+                          Explore
+                          <ArrowRight className="h-4 w-4" />
+                        </span>
                       </div>
-                    )}
-                    <div className="absolute top-3 right-3 rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
-                      {place._count.trips} {place._count.trips === 1 ? "trip" : "trips"}
                     </div>
-                  </div>
-
-                  <div className="flex flex-1 flex-col p-5">
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-600">
-                      <MapPin className="h-3.5 w-3.5" />
-                      <span>{place.location}</span>
-                    </div>
-                    <h3 className="mt-1.5 text-lg font-bold text-slate-900 group-hover:text-blue-600 transition">
-                      {place.name}
-                    </h3>
-                    <p className="mt-2 line-clamp-2 text-sm text-slate-600 flex-1 leading-relaxed">
-                      {place.description}
-                    </p>
-
-                    <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                      <span>{place._count.photos} photos available</span>
-                      <Link
-                        href={`/places/${place.id}`}
-                        className="font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
-                      >
-                        Details
-                        <ChevronRight className="h-3.5 w-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                  </Link>
+                </article>
               ))}
             </div>
           )}
         </div>
       </section>
 
-      {/* How it Works Section */}
-      <section id="how-it-works" className="py-20 bg-white border-y border-slate-200">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-              Simple & Seamless
-            </span>
-            <h2 className="text-3xl font-bold text-slate-900 mt-1">
-              How Let&apos;s Visit Works
+      {/* How it works */}
+      <section className="border-y border-[#D8CDD2] bg-[#EFF1F3] py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold text-[#D97760]">
+              Getting started
+            </p>
+
+            <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+              Your next trip starts here
             </h2>
-            <p className="text-slate-600 mt-3 text-base">
-              Start your journey in three effortless steps.
+
+            <p className="mt-3 text-sm leading-6 text-[#52646B] sm:text-base">
+              A straightforward way to discover places and plan a journey.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex flex-col items-center text-center p-6 rounded-2xl bg-slate-50 border border-slate-100">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 mb-5">
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            <div className="rounded-xl border border-[#D8CDD2] bg-white p-6 sm:p-7">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#D8CDD2]/60 text-[#223843]">
                 <MapPin className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">1. Discover Places</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-                Browse scenic destinations, view uploaded photos, and check upcoming trip itineraries.
+
+              <p className="mt-6 text-sm font-semibold text-[#D97760]">
+                01
+              </p>
+
+              <h3 className="mt-2 text-xl font-semibold">
+                Choose a destination
+              </h3>
+
+              <p className="mt-3 text-sm leading-6 text-[#52646B]">
+                Browse available places, look through photos, and find
+                somewhere you would like to visit.
               </p>
             </div>
 
-            <div className="flex flex-col items-center text-center p-6 rounded-2xl bg-slate-50 border border-slate-100">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600 mb-5">
+            <div className="rounded-xl border border-[#D8CDD2] bg-white p-6 sm:p-7">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#D8B4A0]/50 text-[#223843]">
                 <Car className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">2. Reserve Your Seat</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-                Car fleets and seating capacities are carefully calculated so everyone rides comfortably.
+
+              <p className="mt-6 text-sm font-semibold text-[#D97760]">
+                02
+              </p>
+
+              <h3 className="mt-2 text-xl font-semibold">
+                Plan your journey
+              </h3>
+
+              <p className="mt-3 text-sm leading-6 text-[#52646B]">
+                Check trip details and available seats before making
+                arrangements for your journey.
               </p>
             </div>
 
-            <div className="flex flex-col items-center text-center p-6 rounded-2xl bg-slate-50 border border-slate-100">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-100 text-teal-600 mb-5">
+            <div className="rounded-xl border border-[#D8CDD2] bg-white p-6 sm:p-7">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-[#D97760]/15 text-[#D97760]">
                 <Users className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">3. Travel & Connect</h3>
-              <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-                Meet your travel companions, chat with your group, and experience great memories together.
+
+              <p className="mt-6 text-sm font-semibold text-[#D97760]">
+                03
+              </p>
+
+              <h3 className="mt-2 text-xl font-semibold">
+                Enjoy the experience
+              </h3>
+
+              <p className="mt-3 text-sm leading-6 text-[#52646B]">
+                Join a shared journey, meet other travelers, and enjoy
+                discovering somewhere new.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Why Us Section */}
-      <section id="features" className="py-20 bg-slate-50">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                Peace of Mind
-              </span>
-              <h2 className="text-3xl font-bold text-slate-900 mt-2 leading-tight">
-                Built specifically for friendly group adventures
-              </h2>
-              <p className="mt-4 text-slate-600 leading-relaxed">
-                Forget the headache of juggling spreadsheets, guessing passenger counts, and coordinating drivers. Let&apos;s Visit handles capacity tracking, trip updates, and community chats seamlessly.
-              </p>
+      {/* Closing section */}
+      <section className="bg-[#223843] px-5 py-16 text-white sm:px-8 sm:py-20">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-sm font-medium text-[#D8B4A0]">
+              Make time to explore
+            </p>
 
-              <div className="mt-8 space-y-4">
-                <div className="flex items-start gap-3.5">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mt-0.5">
-                    ✓
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900">Automatic Capacity Guard</h4>
-                    <p className="text-sm text-slate-500">
-                      Calculates car seats dynamically and prevents overbooking when trips reach maximum limit.
-                    </p>
-                  </div>
-                </div>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+              Somewhere new is waiting.
+            </h2>
 
-                <div className="flex items-start gap-3.5">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mt-0.5">
-                    ✓
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900">Curated & Verified Locations</h4>
-                    <p className="text-sm text-slate-500">
-                      High-resolution photos, local guidance, and authentic destination tips.
-                    </p>
-                  </div>
-                </div>
+            <p className="mt-4 max-w-xl text-sm leading-6 text-white/75 sm:text-base">
+              Find a destination, check the available trips, and start
+              planning your next getaway.
+            </p>
+          </div>
 
-                <div className="flex items-start gap-3.5">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mt-0.5">
-                    ✓
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900">Seamless Administration</h4>
-                    <p className="text-sm text-slate-500">
-                      Easy control for organizers to schedule trips, manage travelers, and adjust capacities in seconds.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <Link
+            href="/places"
+            className="inline-flex w-fit shrink-0 items-center gap-2 rounded-lg bg-[#D97760] px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-[#C96A54]"
+          >
+            Browse places
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
 
-            <div className="rounded-3xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-slate-900 p-8 text-white shadow-xl relative overflow-hidden">
-              <div className="relative z-10">
-                <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold backdrop-blur-md">
-                  Community Highlights
-                </span>
-                <h3 className="mt-4 text-2xl font-bold">
-                  &ldquo;Planning road trips with friends used to take hours. Now we just pick a place and go.&rdquo;
-                </h3>
-                <p className="mt-6 text-sm text-blue-100 font-medium">
-                  — The Let&apos;s Visit Community
-                </p>
-
-                <div className="mt-8 pt-6 border-t border-white/20 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-blue-200" />
-                    <span className="text-sm font-medium">Weekly group excursions</span>
-                  </div>
-                  <Link
-                    href="/places"
-                    className="rounded-lg bg-white px-4 py-2 text-xs font-bold text-blue-600 shadow-md hover:bg-slate-100 transition"
-                  >
-                    Explore Now
-                  </Link>
-                </div>
-              </div>
-            </div>
+        <div className="mx-auto mt-12 max-w-7xl border-t border-white/15 pt-5">
+          <div className="flex flex-col gap-2 text-xs text-white/60 sm:flex-row sm:items-center sm:justify-between">
+            <p>Let&apos;s Visit</p>
+            <p>Find places. Share journeys. Make memories.</p>
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }

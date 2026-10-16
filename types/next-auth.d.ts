@@ -18,3 +18,10 @@ declare module "@auth/core/jwt" {
     role: "USER" | "ADMIN";
   }
 }
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    role: "USER" | "ADMIN";
+  }
+}

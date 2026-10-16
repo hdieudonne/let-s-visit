@@ -15,6 +15,7 @@ export default async function PlaceDetailPage({
   const { id } = await params;
   const session = await auth();
   const userId = session?.user?.id;
+  const isAdmin = session?.user?.role === "ADMIN";
 
   const place = await prisma.place.findUnique({
     where: { id },
@@ -36,9 +37,27 @@ export default async function PlaceDetailPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <Link href="/places" className="text-sm text-slate-500 hover:text-blue-600">
-        ← All places
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link href="/places" className="text-sm text-slate-500 hover:text-blue-600">
+          ← All places
+        </Link>
+        {isAdmin && (
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/admin/places/${place.id}`}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition"
+            >
+              Edit in Admin
+            </Link>
+            <Link
+              href="/admin/trips/new"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-2xs hover:bg-blue-700 transition"
+            >
+              + Schedule Trip
+            </Link>
+          </div>
+        )}
+      </div>
 
       <div className="mt-4 grid gap-10 lg:grid-cols-5">
         <div className="space-y-6 lg:col-span-3">
@@ -145,6 +164,15 @@ export default async function PlaceDetailPage({
                     </span>
                   ) : (
                     <JoinButton tripId={trip.id} joined={false} />
+                  )}
+
+                  {isAdmin && (
+                    <Link
+                      href={`/admin/trips/${trip.id}`}
+                      className="ml-auto text-xs font-semibold text-slate-500 hover:text-blue-600 hover:underline"
+                    >
+                      Manage in Admin →
+                    </Link>
                   )}
                 </div>
               </div>

@@ -6,15 +6,21 @@ export default auth((req) => {
   const user = req.auth?.user;
 
   if (pathname.startsWith("/admin")) {
-    if (!user) return NextResponse.redirect(new URL("/login", req.url));
+    if (!user) {
+      const loginUrl = new URL("/login", req.url);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
     if (user.role !== "ADMIN") return NextResponse.redirect(new URL("/", req.url));
   }
 
   if (pathname.startsWith("/trips") && !user) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 });
 
 export const config = {
-  matcher: ["/admin/:path*", "/trips/:path*"],
+  matcher: ["/admin", "/admin/:path*", "/trips/:path*"],
 };

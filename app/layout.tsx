@@ -31,10 +31,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
+      <body className="min-h-full flex flex-col bg-[#EFF1F3] text-[#223843] selection:bg-[#D97760] selection:text-white">
         <Navbar />
         <div className="flex-1">{children}</div>
-        <footer className="border-t border-slate-200 bg-white py-8 text-center text-sm text-slate-500">
+        <footer className="border-t border-[#D8CDD2] bg-[#EFF1F3] py-8 text-center text-sm text-[#52646B]">
           © {new Date().getFullYear()} Let&apos;s Visit. All rights reserved.
         </footer>
       </body>
